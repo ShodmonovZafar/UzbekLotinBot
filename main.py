@@ -19,12 +19,14 @@ async def send_welcome(message: types.Message):
     """
     await message.reply("Assalomu Aleykum!\nMen sizga Lotin tilidan yordam beraman!")
 
-@dp.message_handler(commands=['abdurahmon'])
-async def abdurahmon(message: types.Message):
+@dp.message_handler(commands=['ot', 'si', "fe", "so", "ra", "ol"], commands_prefix="+")
+async def f(message: types.Message):
     """
     This handler will be called when user sends `/start` or `/help` command
     """
-    await message.reply("Salom Abdurahmon!")
+    x = message.text
+    soz = x[4:]
+    await message.answer("{}".format(soz.upper()))
 
 
 
