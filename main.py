@@ -1,4 +1,7 @@
 import logging
+import functions as func
+from message_constants import START_COMMAND
+from datas import data_ot_soz_turkumi
 
 from aiogram import Bot, Dispatcher, executor, types
 
@@ -12,30 +15,43 @@ bot = Bot(token=API_TOKEN)
 dp = Dispatcher(bot)
 
 
-@dp.message_handler(commands=['start', 'help'])
+@dp.message_handler(commands=['start'])
 async def send_welcome(message: types.Message):
-    """
-    This handler will be called when user sends `/start` or `/help` command
-    """
-    await message.reply("Assalomu Aleykum!\nMen sizga Lotin tilidan yordam beraman!")
+    await message.reply(START_COMMAND)
 
-@dp.message_handler(commands=['ot', 'si', "fe", "so", "ra", "ol"], commands_prefix="+")
+@dp.message_handler(commands=['ot'], commands_prefix="+")
 async def f(message: types.Message):
-    """
-    This handler will be called when user sends `/start` or `/help` command
-    """
-    x = message.text
-    soz = x[4:]
-    await message.answer("{}".format(soz.upper()))
+    x = message.text.lower()
+    x = func.tutuq_belgisi(x)
+    await message.answer(x)
+
+@dp.message_handler(commands=['topilmaganlar'], commands_prefix="+")
+async def f(message: types.Message):
+    with open("topilmagan_sozlar.txt") as file:
+        data_str = file.read()
+    await message.answer(data_str)
 
 
 
 @dp.message_handler()
 async def echo(message: types.Message):
-    # old style:
-    # await bot.send_message(message.chat.id, message.text)
+    try:
+        s = message.text.lower()
+        s = func.tutuq_belgisi(s)
+        x = func.ot(data_ot_soz_turkumi, s)
+    except:
+        await message.answer("Xatolik! Iltimos, lotin alifbosida o'zbekcha so'z kiriting!")
+    if type(x) == int:
+        with open("topilmagan_sozlar.txt", "a") as file:
+            s1 = "{} ".format(s)
+            try:
+                file.write(s1)
+            except:
+                await message.answer("Xatolik! Iltimos, lotin alifbosida o'zbekcha so'z kiriting!")
 
-    await message.answer(message.text)
+        await message.answer("Natija topilmadi!")
+    else:
+        await message.answer(func.f(x))
 
 
 if __name__ == '__main__':
