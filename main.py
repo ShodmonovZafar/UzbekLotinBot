@@ -19,18 +19,11 @@ dp = Dispatcher(bot)
 async def send_welcome(message: types.Message):
     await message.reply(START_COMMAND)
 
-@dp.message_handler(commands=['ot'], commands_prefix="+")
-async def f(message: types.Message):
-    x = message.text.lower()
-    x = func.tutuq_belgisi(x)
-    await message.answer(x)
-
 @dp.message_handler(commands=['topilmaganlar'], commands_prefix="+")
 async def f(message: types.Message):
     with open("topilmagan_sozlar.txt") as file:
         data_str = file.read()
     await message.answer(data_str)
-
 
 
 @dp.message_handler()
@@ -40,7 +33,7 @@ async def echo(message: types.Message):
         s = func.tutuq_belgisi(s)
         x = func.ot(data_ot_soz_turkumi, s)
     except:
-        await message.answer("Xatolik! Iltimos, lotin alifbosida o'zbekcha so'z kiriting!")
+        await message.answer("Dasturda xatolik yuz berdi! \n Iltimos! Boshqatdan urinib ko'ring. ")
     if type(x) == int:
         with open("topilmagan_sozlar.txt", "a") as file:
             s1 = "{} ".format(s)
