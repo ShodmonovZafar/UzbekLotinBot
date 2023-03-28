@@ -28,3 +28,29 @@ def tutuq_belgisi(s: str):
             res += i
     return res
 
+def g(s: str):
+    x = 0
+    y = 0
+    a = 0
+    b = 0
+    for i, e in enumerate(s):
+        if e == "(":
+            x = i
+        elif e == ")":
+            y = i
+        elif e == "[":
+            a = i
+        elif e == "]":
+            b = i
+        else:
+            pass
+    n = s[x+1:y].split(" ") 
+    m = s[a+1:b].split(" ")
+    di = {}
+    
+    di["lotincha-bosh-birlik"] = n[0]
+    di["lotincha-qaratqich-birlik-qoshimcha"] = n[1]
+    di["ozbekcha-bosh-birlik"] = m
+    di["rod"] = n[2]
+    return di
+    
