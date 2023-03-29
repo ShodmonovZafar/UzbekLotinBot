@@ -1,11 +1,21 @@
 import logging
 import functions as func
 from message_constants import START_COMMAND
-from datas import data_ot_soz_turkumi
+
 
 from aiogram import Bot, Dispatcher, executor, types
 
 from constants import API_TOKEN
+
+data_ot_soz_turkumi = []
+
+with open("ot.txt") as file:
+    ot_str = file.read()
+
+bitta_element = ot_str.split("\n")
+
+for i in bitta_element:
+    data_ot_soz_turkumi.append(func.g(i))
 
 # Configure logging
 logging.basicConfig(level=logging.INFO)
@@ -55,6 +65,15 @@ async def f(message: types.Message):
     if m in data_ot_soz_turkumi:
         await message.answer("Bu so'z bor.")
     else:
+        qosh = []
+        for i in m["ozbekcha-bosh-birlik"]:
+            qosh.append(f'"{i}"')
+        qoshiladigan_str = '("{1}", "{2}", "{3}"){0}'.format(qosh,
+                                     m["lotincha-bosh-birlik"],
+                                     m["lotincha-qaratqich-birlik-qoshimcha"],
+                                     m["rod"])
+        with open("ot.txt", "a") as file:
+            file.write(f"\n{qoshiladigan_str}")
         data_ot_soz_turkumi.append(m)
         for i in m["ozbekcha-bosh-birlik"]:
             if i in count:

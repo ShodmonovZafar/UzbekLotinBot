@@ -44,8 +44,9 @@ def g(s: str):
             b = i
         else:
             pass
-    n = s[x+1:y].split(" ") 
-    m = s[a+1:b].split(" ")
+    n = s[x+1:y].split('"')[1::2]
+    m = s[a+1:b].split('"')[1::2]
+
     di = {}
     
     di["lotincha-bosh-birlik"] = n[0]
