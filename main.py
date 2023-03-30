@@ -82,7 +82,6 @@ async def f(message: types.Message):
                 pass
         await message.answer("Bu so'z qo'shildi, hamda topilmaganlardan o'chirildi.")
 
-
 @dp.message_handler()
 async def echo(message: types.Message):
     global count
@@ -99,7 +98,6 @@ async def echo(message: types.Message):
         await message.answer("Natija topilmadi!")
     else:
         await message.answer(func.f(x))
-
 
 if __name__ == '__main__':
     executor.start_polling(dp, skip_updates=True)
