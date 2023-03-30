@@ -54,4 +54,10 @@ def g(s: str):
     di["ozbekcha-bosh-birlik"] = m
     di["rod"] = n[2]
     return di
-    
+
+def f1(s: str) -> set:
+    """
+    s = '"olma"\n"nok"\n"bexi"'
+    returns: {"olma", "nok", "bexi"}
+    """
+    return set(s.split("\n"))

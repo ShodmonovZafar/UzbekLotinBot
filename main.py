@@ -1,10 +1,7 @@
 import logging
 import functions as func
 from message_constants import START_COMMAND
-
-
 from aiogram import Bot, Dispatcher, executor, types
-
 from constants import API_TOKEN
 
 data_ot_soz_turkumi = []
@@ -24,7 +21,10 @@ logging.basicConfig(level=logging.INFO)
 bot = Bot(token=API_TOKEN)
 dp = Dispatcher(bot)
 
-count = set()
+with open("top.txt") as file:
+    top_str = file.read()
+
+count = func.f1(top_str)
 
 @dp.message_handler(commands=['start'])
 async def send_welcome(message: types.Message):
@@ -94,6 +94,8 @@ async def echo(message: types.Message):
         await message.answer("Dasturda xatolik yuz berdi! \n Iltimos! Boshqatdan urinib ko'ring. ")
     if type(x) == int:
         count.add(s)
+        with open("top.txt", "a") as file:
+            file.write(f'\n"{s}"')
         await message.answer("Natija topilmadi!")
     else:
         await message.answer(func.f(x))
