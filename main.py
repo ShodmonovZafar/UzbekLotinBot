@@ -1,18 +1,10 @@
 import logging
-import functions as func
-from message_constants import START_COMMAND
 from aiogram import Bot, Dispatcher, executor, types
-from constants import API_TOKEN
 
-data_ot_soz_turkumi = []
-
-with open("ot.txt") as file:
-    ot_str = file.read()
-
-bitta_element = ot_str.split("\n")
-
-for i in bitta_element:
-    data_ot_soz_turkumi.append(func.g(i))
+from api_token import API_TOKEN
+from constants import START_COMMAND, BUYRUQLAR
+import functions as func
+from datas import data_ot_soz_turkumi, count
 
 # Configure logging
 logging.basicConfig(level=logging.INFO)
@@ -21,28 +13,47 @@ logging.basicConfig(level=logging.INFO)
 bot = Bot(token=API_TOKEN)
 dp = Dispatcher(bot)
 
-with open("top.txt") as file:
-    top_str = file.read()
-
-count = func.f1(top_str)
 
 @dp.message_handler(commands=['start'])
 async def send_welcome(message: types.Message):
-    await message.reply(START_COMMAND)
+    await message.answer(START_COMMAND)
 
-@dp.message_handler(commands=["top"])
+@dp.message_handler(commands=["test"])
+async def test(message: types.Message):
+    await message.answer_photo("rasm.PNG")
+
+@dp.message_handler(commands=["topilmaganlar"])
 async def check_count(message: types.Message):
-    global count
-    if count:
-        re_str = ""
-        for i in count:
-            re_str += f"{i}\n"
+    with open("topilmaganlar.txt") as file:
+        s = file.read()
+    if s == "":
+        res = "Topilmagan so'zlar yo'q."
     else:
-        re_str = "Topilmagan so'zlar yo'q."
-    
-    await message.answer(re_str)
+        res = s
+    await message.answer(res)
 
-@dp.message_handler(commands=["top_ochir"])
+@dp.message_handler(commands=["topilmaganlarniYangilash"])
+async def top_yangi(message: types.Message):
+    ot_soz_turkumi = set()
+    for i in data_ot_soz_turkumi:
+        for j in i["ozbekcha-bosh-birlik"]:
+            ot_soz_turkumi.add(j)
+    with open("topilmaganlar.txt") as file:
+        data = file.read()
+    top_dagi_otlar_toplami = set(data.split("\n"))
+    top_dagi_otlar_toplami -= ot_soz_turkumi
+    with open("topilmaganlar.txt", "w") as file:
+        s = ""
+        for i in top_dagi_otlar_toplami:
+            s += f"{i}\n"
+        file.write(s[:-1])
+    await message.answer("Topilmaganlar to'plami yangilandi.")
+    
+@dp.message_handler(commands=["buyruqlar"])
+async def buyruqlar(message: types.Message):
+    await message.answer(BUYRUQLAR, parse_mode="HTML")
+
+@dp.message_handler(commands=["topilmaganlardanOchirish"])
 async def top_ochir(message: types.Message):
     global count
     try:
@@ -55,7 +66,7 @@ async def top_ochir(message: types.Message):
     else:
         await message.answer(f"{s} so'zi topilmaganlar ichida yo'q.")
 
-@dp.message_handler(commands=['ot'])
+@dp.message_handler(commands=['elementQoshish'])
 async def f(message: types.Message):
     try:
         s = func.tutuq_belgisi(message.text[4:].lower())
@@ -93,11 +104,12 @@ async def echo(message: types.Message):
         await message.answer("Dasturda xatolik yuz berdi! \n Iltimos! Boshqatdan urinib ko'ring. ")
     if type(x) == int:
         count.add(s)
-        with open("top.txt", "a") as file:
-            file.write(f'\n"{s}"')
+        with open("topilmaganlar.txt", "a") as file:
+            file.write(f'{s}\n')
         await message.answer("Natija topilmadi!")
     else:
         await message.answer(func.f(x))
 
+# Start the bot
 if __name__ == '__main__':
     executor.start_polling(dp, skip_updates=True)

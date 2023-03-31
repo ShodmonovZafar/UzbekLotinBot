@@ -152,4 +152,4 @@
 ("bursa", "ae", "f")["sumka", "xalta"]
 ("fibra", "ae", "f")["tola"]
 ("papilla", "ae", "f")['"so\'rg\'ich"']
-("nucleus", "i", "m")['"yadro"']
+("nucleus", "i", "m")["yadro"]
